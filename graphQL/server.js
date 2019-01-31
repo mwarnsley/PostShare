@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 // Requiring in the dotenv for using the private env variables
 require('dotenv').config({ path: 'variables.env' });
 
+// Accessing the current model Schemas that we have available to pass to Apollo Server
+const User = require('./models/User');
+const Post = require('./models/Post');
+
 // Connecting mongoose
 mongoose
     .connect(process.env.MONGO_URI, { useNewUrlParser: true })
@@ -66,10 +70,15 @@ const typeDefs = gql`
 /**
  * Initializing the apollo server
  * Passing in the typeDefs for the types of data in the application
+ * Passing in the context object using the models that we have available for the application
  * Passing in the resolver functions used inside of the application
  */
 const server = new ApolloServer({
-    typeDefs
+    typeDefs,
+    context: {
+        User,
+        Post
+    }
     // resolvers
 });
 
