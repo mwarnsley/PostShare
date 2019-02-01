@@ -1,3 +1,6 @@
+# Graph QL file that is used for all of the typeDefs
+
+# User typeDef
 type User {
     _id: ID
     username: String! @unique
@@ -8,6 +11,7 @@ type User {
     favorites: [Post]
 }
 
+# Post typeDef
 type Post {
     title: String!
     imageUrl: String!
@@ -19,6 +23,7 @@ type Post {
     messsages: [Message]
 }
 
+# Message typeDef
 type Message {
     _id: ID
     messageBody: String!
@@ -26,10 +31,12 @@ type Message {
     messageUser: User!
 }
 
+# Built in query types
 type Query {
-    getUser: User
+    getPosts: [Post]
 }
 
+# Built in mutation types
 type Mutation {
     addPost(title: String!, imageUrl: String!, categories: [String]!, description: String!, creatorId: ID!): Post!
     signupUser(username: String!, email: String!, password: String!): User!
