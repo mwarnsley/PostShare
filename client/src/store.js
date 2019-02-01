@@ -7,10 +7,16 @@ import { defaultClient as apolloClient } from './main';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {},
-    mutations: {},
+    state: {
+        posts: []
+    },
+    mutations: {
+        setPosts: (state, payload) => {
+            state.posts = payload;
+        }
+    },
     actions: {
-        getPosts: () => {
+        getPosts: ({ commit }) => {
             // Use the Apolloclient to fire off the getPosts query
             apolloClient
                 .query({
@@ -24,12 +30,19 @@ export default new Vuex.Store({
                         }
                     `
                 })
-                .then(data => {
-                    console.log('Data: ', data);
+                .then(({ data }) => {
+                    // Setting the data of the post into a const
+                    const posts = data.getPosts;
+
+                    // Commit allows use to pass data from the actions along to the mutation function
+                    commit('setPosts', posts);
                 })
                 .catch(err => {
                     console.error('Error fetching posts: ', err);
                 });
         }
+    },
+    getters: {
+        posts: state => state.posts
     }
 });
