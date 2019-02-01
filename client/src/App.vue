@@ -62,7 +62,9 @@
 
     <main>
       <v-container class="mt-4">
-        <router-view />
+        <transition name="fade">
+          <router-view />
+        </transition>
       </v-container>
     </main>
 
@@ -124,4 +126,20 @@
     }
   }
 </script>
+
+<style lang="scss" scoped>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition-duration: 0.25s;
+    transition-property: opacity;
+  }
+  .fade-enter-active {
+    transition-delay: 0.25s;
+  }
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0;
+  }
+</style>
+
 
