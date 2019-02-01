@@ -1,26 +1,48 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import router from './router';
 
 import { defaultClient as apolloClient } from './main';
-import { GET_POSTS, SIGNIN_USER } from './queries';
-import { SET_LOADING, SET_POSTS } from './constants';
+import { GET_POSTS, SIGNIN_USER, GET_CURRENT_USER } from './queries';
+import { SET_LOADING, SET_POSTS, SET_USER } from './constants';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         posts: [],
+        user: null,
         loading: false
     },
     mutations: {
         setPosts: (state, payload) => {
             state.posts = payload;
         },
+        setUser: (state, payload) => {
+            state.user = payload;
+        },
         setLoading: (state, payload) => {
             state.loading = payload;
         }
     },
     actions: {
+        getCurrentUser: ({ commit }) => {
+            commit(SET_LOADING, true);
+            apolloClient
+                .query({
+                    query: GET_CURRENT_USER
+                })
+                .then(({ data }) => {
+                    commit(SET_LOADING, false);
+                    // Grabbing the current user if there is one and setting it to state
+                    const { getCurrentUser } = data;
+                    commit(SET_USER, getCurrentUser);
+                })
+                .catch(err => {
+                    commit(SET_LOADING, false);
+                    console.error(err);
+                });
+        },
         getPosts: ({ commit }) => {
             commit(SET_LOADING, true);
             // Use the Apolloclient to fire off the getPosts query
@@ -51,6 +73,8 @@ export default new Vuex.Store({
                     const { signinUser } = data;
                     // Setting the users token into local storage
                     localStorage.setItem('token', signinUser.token);
+                    // Make sure the created method is run in main.js (we run getCurrentUser) refresh the current page
+                    router.go();
                 })
                 .catch(err => {
                     console.error('Error signing in user: ', err);
@@ -59,6 +83,7 @@ export default new Vuex.Store({
     },
     getters: {
         posts: state => state.posts,
-        loading: state => state.loading
+        loading: state => state.loading,
+        user: state => state.user
     }
 });

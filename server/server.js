@@ -32,8 +32,8 @@ const PORT = process.env.PORT || 4000;
 const getUser = async token => {
     if (token) {
         try {
-            // Verifying the token with JWT
-            const user = await jwt.verify(token, process.env.SECRET);
+            // Verifying the token with JWT and returning it
+            return await jwt.verify(token, process.env.SECRET);
         } catch (err) {
             throw new AuthenticationError(
                 'Your session has expired. Please sign in again'
