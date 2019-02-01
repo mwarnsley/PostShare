@@ -13,6 +13,7 @@ type User {
 
 # Post typeDef
 type Post {
+    _id: ID
     title: String!
     imageUrl: String!
     categories: [String]!
