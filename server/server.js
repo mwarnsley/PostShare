@@ -1,7 +1,8 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, AuthenticationError } = require('apollo-server');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 /**
  * Requiring in the typeDefs from the typeDefs file
@@ -27,6 +28,20 @@ mongoose
 // Setting the port from the env or port 400
 const PORT = process.env.PORT || 4000;
 
+// Verify JWT token passed from the client
+const getUser = async token => {
+    if (token) {
+        try {
+            // Verifying the token with JWT
+            const user = await jwt.verify(token, process.env.SECRET);
+        } catch (err) {
+            throw new AuthenticationError(
+                'Your session has expired. Please sign in again'
+            );
+        }
+    }
+};
+
 /**
  * Initializing the apollo server
  * Passing in the typeDefs for the types of data in the application
@@ -36,9 +51,13 @@ const PORT = process.env.PORT || 4000;
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: {
-        User,
-        Post
+    context: async ({ req }) => {
+        const token = req.headers['authorization'];
+        return {
+            User,
+            Post,
+            currentUser: await getUser(token)
+        };
     }
 });
 
