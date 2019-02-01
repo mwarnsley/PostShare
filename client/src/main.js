@@ -14,7 +14,7 @@ Vue.use(VueApollo);
  * Setting up the new Apollo Client with options
  * @param { uri } String allowing us to connect the frontend to the backend (Where to make requests)
  */
-const defaultClient = new ApolloClient({
+export const defaultClient = new ApolloClient({
     uri: 'http://localhost:4000/graphql'
 });
 
