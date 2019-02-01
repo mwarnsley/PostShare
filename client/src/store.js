@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { gql } from 'apollo-boost';
 import { defaultClient as apolloClient } from './main';
 import { GET_POSTS } from './queries';
+import { SET_LOADING, SET_POSTS } from './constants';
 
 Vue.use(Vuex);
 
@@ -22,7 +22,7 @@ export default new Vuex.Store({
     },
     actions: {
         getPosts: ({ commit }) => {
-            commit('setLoading', true);
+            commit(SET_LOADING, true);
             // Use the Apolloclient to fire off the getPosts query
             apolloClient
                 .query({
@@ -32,12 +32,12 @@ export default new Vuex.Store({
                     // Setting the data of the post into a const
                     const posts = data.getPosts;
                     // Commit allows use to pass data from the actions along to the mutation function
-                    commit('setPosts', posts);
+                    commit(SET_POSTS, posts);
                     // Stop the loading
-                    commit('setLoading', false);
+                    commit(SET_LOADING, false);
                 })
                 .catch(err => {
-                    commit('setLoading', false);
+                    commit(SET_LOADING, false);
                     console.error('Error fetching posts: ', err);
                 });
         }

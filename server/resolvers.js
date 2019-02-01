@@ -7,6 +7,8 @@
  * @param { context or destructured context from Apollo }
  */
 
+const bcrypt = require('bcrypt');
+
 module.exports = {
     Query: {
         getPosts: async (_, args, { Post }) => {
@@ -34,6 +36,23 @@ module.exports = {
             }).save();
 
             return newPost;
+        },
+        signinUser: async (_, { username, password }, { User }) => {
+            const user = await User.findOne({ username });
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const isValidPassword = await bcrypt.compare(
+                password,
+                user.password
+            );
+
+            if (!isValidPassword) {
+                throw new Error('Invalid password');
+            }
+
+            return user;
         },
         signupUser: async (_, { username, email, password }, { User }) => {
             const user = await User.findOne({ username });
