@@ -4,6 +4,7 @@ import router from './router';
 
 import { defaultClient as apolloClient } from './main';
 import {
+    ADD_POST,
     GET_CURRENT_USER,
     GET_POSTS,
     SIGNIN_USER,
@@ -48,6 +49,21 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        addPost: ({ commit }, payload) => {
+            commit(SET_LOADING, true);
+            console.log('The Payload: ', payload);
+            apolloClient
+                .mutate({
+                    mutation: ADD_POST,
+                    variables: payload
+                })
+                .then(({ data }) => {
+                    console.log('The Data: ', data.addPost);
+                })
+                .catch(err => {
+                    console.error('Add Post Error: ', err);
+                });
+        },
         getCurrentUser: ({ commit }) => {
             commit(SET_LOADING, true);
             apolloClient
@@ -99,9 +115,8 @@ export default new Vuex.Store({
                 })
                 .then(({ data }) => {
                     commit(SET_LOADING, false);
-                    const { signinUser } = data;
                     // Setting the users token into local storage
-                    localStorage.setItem('token', signinUser.token);
+                    localStorage.setItem('token', data.signinUser.token);
                     // Make sure the created method is run in main.js (we run getCurrentUser) refresh the current page
                     router.go();
                 })

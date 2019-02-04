@@ -62,3 +62,38 @@ export const SIGNUP_USER = gql`
         }
     }
 `;
+
+/************ Post Mutations **********/
+
+/**
+ * Muation for adding a post by a User
+ * @param { title } string required for the title of the post
+ * @param { imageUrl } string required for the url of the images post
+ * @param { categories } array of strings representing the category in which the post is under
+ * @param { description } string required for the description of the post
+ * @param { creatorId } string ID of the user who is posting the post
+ */
+export const ADD_POST = gql`
+    mutation(
+        $title: String!
+        $imageUrl: String!
+        $categories: [String]!
+        $description: String!
+        $creatorId: ID!
+    ) {
+        addPost(
+            title: $title
+            imageUrl: $imageUrl
+            categories: $categories
+            description: $description
+            creatorId: $creatorId
+        ) {
+            _id
+            title
+            imageUrl
+            categories
+            description
+            createdDate
+        }
+    }
+`;

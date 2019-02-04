@@ -48,7 +48,7 @@
                     <v-layout row>
                         <v-flex xs12>
                             <v-select
-                                :items="['Art', 'Education', 'Photography', 'Technology', 'Travel']"
+                                :items="['Art', 'Clothing', 'Education', 'Food', 'Furniture', 'Photography', 'Technology', 'Travel']"
                                 label="Categories"
                                 multiple
                                 :rules="categoriesRules"
@@ -125,7 +125,21 @@
             };
         },
         computed: {
-            ...mapGetters(['error', 'loading'])
+            ...mapGetters(['loading', 'user'])
+        },
+        methods: {
+            handleAddPost() {
+                // Add the post action
+                if (this.$refs.form.validate()) {
+                    this.$store.dispatch('addPost', {
+                        title: this.title,
+                        imageUrl: this.imageUrl,
+                        categories: this.categories,
+                        description: this.description,
+                        creatorId: this.user._id
+                    });
+                }
+            }
         }
     }
 </script>
