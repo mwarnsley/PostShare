@@ -87,7 +87,7 @@
                     // Check to make sure there is a password typed in
                     password => !!password || 'Password is required',
                     // Checking to make sure that the password is at least 7 characters long
-                    password => password && password.length >= 7 || 'Password must be at least 7 characters'
+                    password => password && password.length >= 4 || 'Password must be at least 7 characters'
                 ],
                 usernameRules: [
                     // Checking to see if the username in input evauluates to true (converting to boolean with !!)
