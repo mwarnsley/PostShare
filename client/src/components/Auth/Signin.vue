@@ -81,19 +81,19 @@
         data() {
             return {
                 isFormValid: true,
-                password: null,
-                username: null,
+                password: '',
+                username: '',
                 passwordRules: [
                     // Check to make sure there is a password typed in
                     password => !!password || 'Password is required',
                     // Checking to make sure that the password is at least 7 characters long
-                    password => password && password.length >= 4 || 'Password must be at least 7 characters'
+                    password => password.length >= 4 || 'Password must be at least 7 characters'
                 ],
                 usernameRules: [
                     // Checking to see if the username in input evauluates to true (converting to boolean with !!)
                     username => !!username || 'Username is required',
                     // Make sure the username is less than 10 characters
-                    username => username && username.length < 10 || 'Username must be less than 10 characters'
+                    username => username.length < 10 || 'Username must be less than 10 characters'
                 ]
             };
         },
