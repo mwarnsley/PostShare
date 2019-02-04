@@ -4,7 +4,14 @@ import router from './router';
 
 import { defaultClient as apolloClient } from './main';
 import { GET_POSTS, SIGNIN_USER, GET_CURRENT_USER } from './queries';
-import { CLEAR_USER, SET_LOADING, SET_POSTS, SET_USER } from './constants';
+import {
+    CLEAR_ERROR,
+    CLEAR_USER,
+    SET_ERROR,
+    SET_LOADING,
+    SET_POSTS,
+    SET_USER
+} from './constants';
 
 Vue.use(Vuex);
 
@@ -12,7 +19,8 @@ export default new Vuex.Store({
     state: {
         posts: [],
         user: null,
-        loading: false
+        loading: false,
+        error: null
     },
     mutations: {
         setPosts: (state, payload) => {
@@ -24,6 +32,10 @@ export default new Vuex.Store({
         setLoading: (state, payload) => {
             state.loading = payload;
         },
+        setError: (state, payload) => {
+            state.error = payload;
+        },
+        clearError: state => (state.error = null),
         clearUser: state => (state.user = null)
     },
     actions: {
@@ -41,6 +53,7 @@ export default new Vuex.Store({
                 })
                 .catch(err => {
                     commit(SET_LOADING, false);
+                    commit(SET_ERROR, err.message);
                     console.error(err);
                 });
         },
@@ -61,10 +74,13 @@ export default new Vuex.Store({
                 })
                 .catch(err => {
                     commit(SET_LOADING, false);
+                    commit(SET_ERROR, err.message);
                     console.error('Error fetching posts: ', err);
                 });
         },
         signinUser: ({ commit }, payload) => {
+            // Clearing outt he error message
+            commit(CLEAR_ERROR);
             // Clearing the token at the beginning to prevent any errors from an expired token being used
             localStorage.setItem('token', '');
             apolloClient
@@ -80,6 +96,7 @@ export default new Vuex.Store({
                     router.go();
                 })
                 .catch(err => {
+                    commit(SET_ERROR, err.message);
                     console.error('Error signing in user: ', err);
                 });
         },
@@ -97,6 +114,7 @@ export default new Vuex.Store({
     getters: {
         posts: state => state.posts,
         loading: state => state.loading,
-        user: state => state.user
+        user: state => state.user,
+        error: state => state.error
     }
 });

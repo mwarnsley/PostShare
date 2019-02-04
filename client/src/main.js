@@ -7,6 +7,10 @@ import store from './store';
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
 
+import FormAlert from './components/Shared/FormAlert';
+
+// Registering a global component for global use
+Vue.component('form-alert', FormAlert);
 // Setting up the vue middleware to use
 Vue.use(VueApollo);
 

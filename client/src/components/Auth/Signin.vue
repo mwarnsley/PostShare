@@ -7,6 +7,12 @@
             </v-flex>
         </v-layout>
 
+        <v-layout v-if="error" row wrap>
+            <v-flex xs12 sm6 offset-sm3>
+                <form-alert :message="error"></form-alert>
+            </v-flex>
+        </v-layout>
+
         <v-layout row wrap>
             <v-flex xs12 sm6 offset-sm3>
                 <v-card color="accent2" dark>
@@ -64,7 +70,7 @@
             };
         },
         computed: {
-            ...mapGetters(['user'])
+            ...mapGetters(['user', 'error'])
         },
         watch: {
             user(value) {
