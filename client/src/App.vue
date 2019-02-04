@@ -84,9 +84,27 @@
 
     <main>
       <v-container class="mt-4">
+        
         <transition name="fade">
           <router-view />
         </transition>
+
+        <v-snackbar
+          bottom
+          color="success"
+          left
+          :timeout="5000"
+          v-model="authSnackbar">
+          <v-icon class="mr-3">check_circle</v-icon>
+          <h3>You are now signed in!</h3>
+          <v-btn
+            @click="authSnackbar = false"
+            dark 
+            flat>
+            Close
+          </v-btn>
+        </v-snackbar>
+
       </v-container>
     </main>
 
@@ -100,6 +118,7 @@
     name: 'App',
     data() {
       return {
+        authSnackbar: false,
         sideNav: false
       };
     },
@@ -184,6 +203,13 @@
         }
 
         return items;
+      }
+    },
+    watch: {
+      user(newValue, oldValue) {
+        if (oldValue === null) {
+          this.authSnackbar = true;
+        }
       }
     }
   }
