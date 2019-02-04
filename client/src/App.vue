@@ -105,6 +105,23 @@
           </v-btn>
         </v-snackbar>
 
+        <v-snackbar
+          bottom
+          color="error"
+          left
+          :timeout="5000"
+          v-if="authError"
+          v-model="authErrorSnackbar">
+          <v-icon class="mr-3">cancel</v-icon>
+          <h3>{{ authError.message }}</h3>
+          <v-btn
+            dark 
+            flat
+            to="/signin">
+            Signin
+          </v-btn>
+        </v-snackbar>
+
       </v-container>
     </main>
 
@@ -118,6 +135,7 @@
     name: 'App',
     data() {
       return {
+        authErrorSnackbar: false,
         authSnackbar: false,
         sideNav: false
       };
@@ -131,7 +149,7 @@
       }
     },
     computed: {
-      ...mapGetters(['user']),
+      ...mapGetters(['authError', 'user']),
       horizontalNavItems() {
         let items = [
           {
@@ -209,6 +227,12 @@
       user(newValue, oldValue) {
         if (oldValue === null) {
           this.authSnackbar = true;
+        }
+      },
+      authError(value) {
+        // If the auth error is not null, show the auth error snackbar
+        if (value !== null) {
+          this.authErrorSnackbar = true;
         }
       }
     }

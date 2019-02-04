@@ -9,6 +9,8 @@ import VueApollo from 'vue-apollo';
 
 import FormAlert from './components/Shared/FormAlert';
 
+import { SET_AUTH_ERROR } from './constants';
+
 // Registering a global component for global use
 Vue.component('form-alert', FormAlert);
 // Setting up the vue middleware to use
@@ -43,6 +45,12 @@ export const defaultClient = new ApolloClient({
         if (graphQLErrors) {
             for (let err of graphQLErrors) {
                 console.dir(err);
+                if (err.name === 'AuthenticationError') {
+                    // Set the auth error in the state (show it in the snackbar)
+                    store.commit(SET_AUTH_ERROR, err);
+                    // Signout user (to clear the token)
+                    store.dispatch('signoutUser');
+                }
             }
         }
     }

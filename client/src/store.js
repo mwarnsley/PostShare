@@ -17,17 +17,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        posts: [],
-        user: null,
+        authError: null,
+        error: null,
         loading: false,
-        error: null
+        posts: [],
+        user: null
     },
     mutations: {
-        setPosts: (state, payload) => {
-            state.posts = payload;
-        },
-        setUser: (state, payload) => {
-            state.user = payload;
+        clearError: state => (state.error = null),
+        clearUser: state => (state.user = null),
+        setAuthError: (state, payload) => {
+            state.authError = payload;
         },
         setLoading: (state, payload) => {
             state.loading = payload;
@@ -35,8 +35,12 @@ export default new Vuex.Store({
         setError: (state, payload) => {
             state.error = payload;
         },
-        clearError: state => (state.error = null),
-        clearUser: state => (state.user = null)
+        setPosts: (state, payload) => {
+            state.posts = payload;
+        },
+        setUser: (state, payload) => {
+            state.user = payload;
+        }
     },
     actions: {
         getCurrentUser: ({ commit }) => {
@@ -116,9 +120,10 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        posts: state => state.posts,
+        authError: state => state.authError,
+        error: state => state.error,
         loading: state => state.loading,
-        user: state => state.user,
-        error: state => state.error
+        posts: state => state.posts,
+        user: state => state.user
     }
 });
