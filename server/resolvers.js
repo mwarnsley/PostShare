@@ -43,6 +43,35 @@ module.exports = {
                     model: 'User'
                 });
             return posts;
+        },
+        infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
+            let posts;
+            if (pageNum === 1) {
+                posts = await Post.find({})
+                    .sort({ createdDate: 'desc' })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User'
+                    })
+                    .limit(pageSize);
+            } else {
+                // If the page we are on is greater than one, figure out how many documents to skip
+                const skips = pageSize * (pageNum - 1);
+                posts = await Post.find({})
+                    .sort({ createdDate: 'desc' })
+                    .populate({
+                        path: 'createdBy',
+                        model: 'User'
+                    })
+                    .skip(skips)
+                    .limit(pageSize);
+            }
+            // Calculate the total number of documents that we have
+            const totalDocs = await Post.countDocuments();
+            // Checking to see if we have more documents
+            const hasMore = totalDocs > pageSize * pageNum;
+
+            return { posts, hasMore };
         }
     },
     Mutation: {

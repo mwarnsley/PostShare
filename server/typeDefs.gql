@@ -37,10 +37,17 @@ type Token {
     token: String!
 }
 
+# Type for the infiniteScroll post page
+type PostsPage {
+    posts: [Post]
+    hasMore: Boolean
+}
+
 # Built in query types
 type Query {
     getCurrentUser: User
     getPosts: [Post]
+    infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
 }
 
 # Built in mutation types
