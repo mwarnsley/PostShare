@@ -13,6 +13,7 @@
       <v-divider></v-divider>
 
       <v-list>
+
         <v-list-tile ripple v-for="item in sideNavItems" :key="item.title" :to="item.link">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -21,6 +22,14 @@
             {{ item.title }}
           </v-list-tile-content>
         </v-list-tile>
+
+        <v-list-tile v-if="user" @click="handleSignout">
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>Signout</v-list-tile-content>
+        </v-list-tile>
+
       </v-list>
 
     </v-navigation-drawer>
@@ -64,6 +73,11 @@
           </v-badge>
         </v-btn>
 
+        <v-btn flat v-if="user" @click="handleSignout">
+          <v-icon class="hidden-sm-only">exit_to_app</v-icon>
+          Signout
+        </v-btn>
+
       </v-toolbar-items>
 
     </v-toolbar>
@@ -92,6 +106,9 @@
     methods: {
       toggleSideNav() {
         this.sideNav = !this.sideNav;
+      },
+      handleSignout() {
+        this.$store.dispatch('signoutUser');
       }
     },
     computed: {

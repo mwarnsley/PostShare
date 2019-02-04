@@ -4,7 +4,7 @@ import router from './router';
 
 import { defaultClient as apolloClient } from './main';
 import { GET_POSTS, SIGNIN_USER, GET_CURRENT_USER } from './queries';
-import { SET_LOADING, SET_POSTS, SET_USER } from './constants';
+import { CLEAR_USER, SET_LOADING, SET_POSTS, SET_USER } from './constants';
 
 Vue.use(Vuex);
 
@@ -23,7 +23,8 @@ export default new Vuex.Store({
         },
         setLoading: (state, payload) => {
             state.loading = payload;
-        }
+        },
+        clearUser: state => (state.user = null)
     },
     actions: {
         getCurrentUser: ({ commit }) => {
@@ -64,6 +65,8 @@ export default new Vuex.Store({
                 });
         },
         signinUser: ({ commit }, payload) => {
+            // Clearing the token at the beginning to prevent any errors from an expired token being used
+            localStorage.setItem('token', '');
             apolloClient
                 .mutate({
                     mutation: SIGNIN_USER,
@@ -79,6 +82,16 @@ export default new Vuex.Store({
                 .catch(err => {
                     console.error('Error signing in user: ', err);
                 });
+        },
+        signoutUser: async ({ commit }) => {
+            // Clear the user in state
+            commit(CLEAR_USER);
+            // Remove the token from localstorage
+            localStorage.setItem('token', '');
+            // End the Session for the user
+            await apolloClient.resetStore();
+            // Redirect to the home page - kicking the user out of the private routes
+            router.push('/');
         }
     },
     getters: {
