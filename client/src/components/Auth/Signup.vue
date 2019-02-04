@@ -74,7 +74,7 @@
                                 <v-flex xs12>
                                     <v-btn
                                         color="info"
-                                        :disabled="!isFormValid"
+                                        :disabled="!isFormValid || loading"
                                         :loading="loading" 
                                         type="submit">
                                         <span slot="loader" class="custom-loader">
@@ -139,7 +139,8 @@
                 if (this.$refs.form.validate()) {
                     this.$store.dispatch('signupUser', {
                         username: this.username,
-                        password: this.password
+                        email: this.email,
+                        password: this.password,
                     });
                 }
             }

@@ -50,7 +50,7 @@
                                 <v-flex xs12>
                                     <v-btn
                                         color="accent"
-                                        :disabled="!isFormValid"
+                                        :disabled="!isFormValid || loading"
                                         :loading="loading" 
                                         type="submit">
                                         <span slot="loader" class="custom-loader">

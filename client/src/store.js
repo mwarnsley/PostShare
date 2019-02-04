@@ -3,7 +3,12 @@ import Vuex from 'vuex';
 import router from './router';
 
 import { defaultClient as apolloClient } from './main';
-import { GET_POSTS, SIGNIN_USER, GET_CURRENT_USER } from './queries';
+import {
+    GET_CURRENT_USER,
+    GET_POSTS,
+    SIGNIN_USER,
+    SIGNUP_USER
+} from './queries';
 import {
     CLEAR_ERROR,
     CLEAR_USER,
@@ -87,8 +92,6 @@ export default new Vuex.Store({
             commit(CLEAR_ERROR);
             // Set loading
             commit(SET_LOADING, true);
-            // Clearing the token at the beginning to prevent any errors from an expired token being used
-            localStorage.setItem('token', '');
             apolloClient
                 .mutate({
                     mutation: SIGNIN_USER,
@@ -99,6 +102,30 @@ export default new Vuex.Store({
                     const { signinUser } = data;
                     // Setting the users token into local storage
                     localStorage.setItem('token', signinUser.token);
+                    // Make sure the created method is run in main.js (we run getCurrentUser) refresh the current page
+                    router.go();
+                })
+                .catch(err => {
+                    commit(SET_LOADING, false);
+                    commit(SET_ERROR, err.message);
+                    console.error('Error signing in user: ', err);
+                });
+        },
+        signupUser: ({ commit }, payload) => {
+            // Clearing outt he error message
+            commit(CLEAR_ERROR);
+            // Set loading
+            commit(SET_LOADING, true);
+            apolloClient
+                .mutate({
+                    mutation: SIGNUP_USER,
+                    variables: payload
+                })
+                .then(({ data }) => {
+                    commit(SET_LOADING, false);
+                    const { signupUser } = data;
+                    // Setting the users token into local storage
+                    localStorage.setItem('token', signupUser.token);
                     // Make sure the created method is run in main.js (we run getCurrentUser) refresh the current page
                     router.go();
                 })
