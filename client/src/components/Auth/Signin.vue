@@ -100,14 +100,6 @@
         computed: {
             ...mapGetters(['error', 'loading', 'user'])
         },
-        watch: {
-            user(value) {
-                // Allow for us to watch for changes if the user value changes, redirect to homepage
-                if (value) {
-                    this.$router.push('/');
-                }
-            }
-        },
         methods: {
             handleSigninUser() {
                 if (this.$refs.form.validate()) {
@@ -115,6 +107,14 @@
                         username: this.username,
                         password: this.password
                     });
+                }
+            }
+        },
+        watch: {
+            user(value) {
+                // Allow for us to watch for changes if the user value changes, redirect to homepage
+                if (value) {
+                    this.$router.push('/');
                 }
             }
         }
