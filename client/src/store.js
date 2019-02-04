@@ -81,6 +81,8 @@ export default new Vuex.Store({
         signinUser: ({ commit }, payload) => {
             // Clearing outt he error message
             commit(CLEAR_ERROR);
+            // Set loading
+            commit(SET_LOADING, true);
             // Clearing the token at the beginning to prevent any errors from an expired token being used
             localStorage.setItem('token', '');
             apolloClient
@@ -89,6 +91,7 @@ export default new Vuex.Store({
                     variables: payload
                 })
                 .then(({ data }) => {
+                    commit(SET_LOADING, false);
                     const { signinUser } = data;
                     // Setting the users token into local storage
                     localStorage.setItem('token', signinUser.token);
@@ -96,6 +99,7 @@ export default new Vuex.Store({
                     router.go();
                 })
                 .catch(err => {
+                    commit(SET_LOADING, false);
                     commit(SET_ERROR, err.message);
                     console.error('Error signing in user: ', err);
                 });

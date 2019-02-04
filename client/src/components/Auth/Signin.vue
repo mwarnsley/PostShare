@@ -17,32 +17,47 @@
             <v-flex xs12 sm6 offset-sm3>
                 <v-card color="accent2" dark>
                     <v-container>
-                        <v-form @submit.prevent="handleSigninUser">
+                        <v-form
+                            lazy-validation
+                            ref="form"
+                            @submit.prevent="handleSigninUser"
+                            v-model="isFormValid">
                             <v-layout row>
                                 <v-flex xs12>
                                     <v-text-field
-                                        v-model="username"
-                                        prepend-icon="face"
                                         label="Username"
+                                        prepend-icon="face"
+                                        required
+                                        :rules="usernameRules"
                                         type="text"
-                                        required>
+                                        v-model="username">
                                     </v-text-field>
                                 </v-flex>
                             </v-layout>
                             <v-layout row>
                                 <v-flex xs12>
                                     <v-text-field
-                                        v-model="password"
-                                        prepend-icon="extension"
                                         label="Password"
+                                        prepend-icon="extension"
+                                        required
+                                        :rules="passwordRules"
                                         type="password"
-                                        required>
+                                        v-model="password">
                                     </v-text-field>
                                 </v-flex>
                             </v-layout>
                             <v-layout row>
                                 <v-flex xs12>
-                                    <v-btn color="accent" type="submit">Signin</v-btn>
+                                    <v-btn
+                                        color="accent"
+                                        :disabled="!isFormValid"
+                                        :loading="loading" 
+                                        type="submit">
+                                        <span slot="loader" class="custom-loader">
+                                            <v-icon light>cached</v-icon>
+                                        </span>
+                                        Signin
+                                    </v-btn>
                                     <h3>
                                         Don't have an account?
                                         <router-link to="/signup">Signup</router-link>
@@ -65,12 +80,25 @@
         name: 'Signin',
         data() {
             return {
+                isFormValid: true,
+                password: null,
                 username: null,
-                password: null
+                passwordRules: [
+                    // Check to make sure there is a password typed in
+                    password => !!password || 'Password is required',
+                    // Checking to make sure that the password is at least 7 characters long
+                    password => password && password.length >= 7 || 'Password must be at least 7 characters'
+                ],
+                usernameRules: [
+                    // Checking to see if the username in input evauluates to true (converting to boolean with !!)
+                    username => !!username || 'Username is required',
+                    // Make sure the username is less than 10 characters
+                    username => username && username.length < 10 || 'Username must be less than 10 characters'
+                ]
             };
         },
         computed: {
-            ...mapGetters(['user', 'error'])
+            ...mapGetters(['error', 'loading', 'user'])
         },
         watch: {
             user(value) {
@@ -82,11 +110,52 @@
         },
         methods: {
             handleSigninUser() {
-                this.$store.dispatch('signinUser', {
-                    username: this.username,
-                    password: this.password
-                });
+                if (this.$refs.form.validate()) {
+                    this.$store.dispatch('signinUser', {
+                        username: this.username,
+                        password: this.password
+                    });
+                }
             }
         }
     }
 </script>
+
+<style lang="scss">
+    .custom-loader {
+        animation: loader 1s infinite;
+        display: flex;
+    }
+    @-moz-keyframes loader {
+        from {
+        transform: rotate(0);
+        }
+        to {
+        transform: rotate(360deg);
+        }
+    }
+    @-webkit-keyframes loader {
+        from {
+        transform: rotate(0);
+        }
+        to {
+        transform: rotate(360deg);
+        }
+    }
+    @-o-keyframes loader {
+        from {
+        transform: rotate(0);
+        }
+        to {
+        transform: rotate(360deg);
+        }
+    }
+    @keyframes loader {
+        from {
+        transform: rotate(0);
+        }
+        to {
+        transform: rotate(360deg);
+        }
+    }
+</style>
