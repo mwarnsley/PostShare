@@ -21,7 +21,7 @@ type Post {
     createdDate: String
     likes: Int
     createdBy: User!
-    messsages: [Message]
+    messages: [Message]
 }
 
 # Message typeDef

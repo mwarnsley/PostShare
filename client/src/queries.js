@@ -24,7 +24,7 @@ export const INFINITE_SCROLL_POSTS = gql`
                 description
                 likes
                 createdDate
-                message {
+                messages {
                     _id
                 }
                 createdBy {
